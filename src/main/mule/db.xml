@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="88eb6e08-f87f-4c52-b5c2-bdad12240c86" >
+		<db:my-sql-connection host="mysqldb.c6yzm6urz1tp.us-east-1.rds.amazonaws.com" user="admin" password="Godsake30" port="3306" database="New_DB"/>
+	</db:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d672fe0c-f9e1-4ba7-a487-35a64ce6521a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="bfa650ff-1699-4ea2-af85-2aecb9437505" >
+		<salesforce:basic-connection username="megha30@desh.nagesh" password="Godsake@30" securityToken="xdANBxkpZ8Os4AQAb2ooxsXk" />
+	</salesforce:sfdc-config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="79026145-7c5b-448d-b7e2-e1a06da073f3" />
+	<flow name="dbFlow" doc:id="229f5eb0-426e-4a37-8776-12d933b6e8fc" >
+		<http:listener doc:name="Listener" doc:id="82d92dae-2836-4645-9ef9-f1f496d944f5" config-ref="HTTP_Listener_config" path="/db"/>
+		<flow-ref doc:name="Flow Reference" doc:id="6b8be5b4-4753-41df-96ea-ca53b989fa71" name="dbSub_Flow1"/>
+	</flow>
+	<sub-flow name="dbSub_Flow1" doc:id="fae9d9d3-6909-49e7-9c7b-63aa28a8a619" >
+		<os:retrieve doc:name="Retrieve" doc:id="38b217ce-49ce-42eb-8c7b-abc25a126ee1" key="ModifiedDate" objectStore="Object_store">
+			<os:default-value><![CDATA[0]]></os:default-value>
+		</os:retrieve>
+		<db:select doc:name="Select" doc:id="e544634a-0b50-4230-a9fe-6ee9f367a8e9" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from New_DB.employee where ModifiedDate>:ModifiedDate;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	ModifiedDate:payload
+}]]]></db:input-parameters>
+		</db:select>
+		<os:store doc:name="Store" doc:id="26c70b32-89a4-4007-a4e7-9071580121a5" key="ModifiedDate" objectStore="Object_store">
+			<os:value><![CDATA[#[(payload.ModifiedDate)[-1]]]]></os:value>
+		</os:store>
+		<ee:transform doc:name="Transform Message" doc:id="9b33c8ff-0e2b-46ee-8a21-f0a06e15f529">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Name: payload01.employee_name ,
+	employee_phone_no__c: payload01.phone_no ,
+	employee_salary__c: payload01.employee_salary  ,
+	employee_id__c: payload01.employee_id 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="5e6a3c6b-6ed5-416b-8a73-7be49be024ec" message="#[payload]" />
+	</sub-flow>
+	<sub-flow name="dbSub_Flow" doc:id="58548aeb-b888-4469-a682-c8d079f66c96">
+		<salesforce:create doc:name="Create" doc:id="40105847-d621-44f2-a98f-fde2444e7c75" config-ref="Salesforce_Config" type="employee_profile__c" />
+		<ee:transform doc:name="Transform Message" doc:id="b060a325-338c-4939-8b5e-c52979529d08">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

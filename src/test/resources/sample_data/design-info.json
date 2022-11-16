@@ -1,0 +1,16 @@
+{
+  "sampleData": {
+    "08d01a04-0369-4aa6-96fc-0c67fa0c1a90": {
+      "payload": "sample_data/list_java.dwl"
+    },
+    "78c96d72-1417-4b98-b2da-526faa5746e1": {
+      "payload": "sample_data/list_java_1.dwl"
+    },
+    "26c70b32-89a4-4007-a4e7-9071580121a5": {
+      "payload": "sample_data/list_java_2.dwl"
+    },
+    "9b33c8ff-0e2b-46ee-8a21-f0a06e15f529": {
+      "payload": "sample_data/list_java_3.dwl"
+    }
+  }
+}

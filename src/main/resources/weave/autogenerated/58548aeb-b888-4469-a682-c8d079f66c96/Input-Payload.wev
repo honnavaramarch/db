@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_58548aeb_b888_4469_a682_c8d079f66c96_Input_Payload = Array<{|  phone_no: Any,   employee_id?: Any,   employee_salary?: Any,   employee_name?: Any|}>
+

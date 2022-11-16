@@ -1,0 +1,24 @@
+%dw 2.0
+
+type auto_fae9d9d3_6909_49e7_9c7b_63aa28a8a619_Output_Payload = Array<{|  Name: java_lang_Object | Null,   employee_phone_no__c: java_lang_Object_4 | Null,   employee_salary__c: java_lang_Object_7 | Null,   employee_id__c: java_lang_Object_10 | Null|}>
+type java_lang_Object_4 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_7 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object_10 = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+type java_lang_Object = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+
+
+

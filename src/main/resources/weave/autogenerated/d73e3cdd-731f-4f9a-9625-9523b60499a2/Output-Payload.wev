@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_d73e3cdd_731f_4f9a_9625_9523b60499a2_Output_Payload = {|
+  phone_no: Any, 
+  employee_id?: Any, 
+  employee_salary?: Any, 
+  employee_name?: Any
+|}
+
